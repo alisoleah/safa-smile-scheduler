@@ -9,13 +9,60 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      appointments: {
+        Row: {
+          appointment_date: string
+          appointment_time: string
+          created_at: string
+          id: string
+          message: string | null
+          patient_email: string
+          patient_name: string
+          patient_phone: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          appointment_date: string
+          appointment_time: string
+          created_at?: string
+          id?: string
+          message?: string | null
+          patient_email: string
+          patient_name: string
+          patient_phone: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          appointment_date?: string
+          appointment_time?: string
+          created_at?: string
+          id?: string
+          message?: string | null
+          patient_email?: string
+          patient_name?: string
+          patient_phone?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      check_appointment_availability: {
+        Args: { check_date: string; check_time: string }
+        Returns: boolean
+      }
+      get_available_slots: {
+        Args: { check_date: string }
+        Returns: {
+          time_slot: string
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never
