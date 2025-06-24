@@ -1,14 +1,11 @@
 import React, { useState, useEffect } from 'react';
-// The Supabase client will be loaded dynamically via a script tag.
+// Supabase client will be loaded dynamically from a CDN to resolve the path error.
 
 // --- 1. SUPABASE CONFIGURATION ---
-// IMPORTANT: Replace with your actual Supabase URL and Anon Key
-// It's best practice to store these in environment variables (.env file)
-const supabaseUrl = "https://ycyprrojnpactiebhqkh.supabase.co";
-const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InljeXBycm9qbnBh…
-// Import the supabase client like this:
-// import { supabase } from "@/integrations/supabase/client";
-//////   export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+// IMPORTANT: Replace with your actual Supabase URL and Anon Key from your project.
+const supabaseUrl = 'https://ycyprrojnpactiebhqkh.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InljeXBycm9qbnBhY3RpZWJocWtoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA3NzY3NjQsImV4cCI6MjA2NjM1Mjc2NH0.Mw2Zab3BH8oxjhlzViFtQazzZiqlnh_QLuqc78NptWA';
+
 
 // --- Helper UI Components ---
 
@@ -59,41 +56,35 @@ const AppointmentRow = ({ appointment, onUpdate }) => (
 );
 
 // --- Main Admin Page Component ---
-
 export default function AdminDashboard() {
     const [supabase, setSupabase] = useState(null);
     const [appointments, setAppointments] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [filter, setFilter] = useState('pending'); // 'pending', 'confirmed', 'declined'
+    const [filter, setFilter] = useState('pending');
 
-    // --- 2. DYNAMICALLY LOAD EXTERNAL SCRIPTS ---
+    // --- 2. DYNAMICALLY LOAD SCRIPTS ---
+    // This effect loads necessary scripts from a CDN to avoid path resolution errors.
     useEffect(() => {
-        // Load Font Awesome for icons
-        const fontAwesomeScriptId = 'font-awesome-script';
-        if (!document.getElementById(fontAwesomeScriptId)) {
-            const faScript = document.createElement('script');
-            faScript.id = fontAwesomeScriptId;
-            faScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js';
-            faScript.crossOrigin = 'anonymous';
-            document.head.appendChild(faScript);
-        }
-
-        // Load Supabase client
-        const supabaseScriptId = 'supabase-js-script';
-        if (document.getElementById(supabaseScriptId)) {
-            if (window.supabase) {
-                setSupabase(window.supabase.createClient(supabaseUrl, supabaseKey));
+        const loadScript = (id, src, onLoadCallback) => {
+            if (document.getElementById(id)) {
+                if(onLoadCallback) onLoadCallback();
+                return;
             }
-            return;
-        }
+            const script = document.createElement('script');
+            script.id = id;
+            script.src = src;
+            script.async = true;
+            script.onload = onLoadCallback;
+            script.onerror = () => console.error(`Failed to load script: ${src}`);
+            document.head.appendChild(script);
+        };
 
-        const script = document.createElement('script');
-        script.id = supabaseScriptId;
-        script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2'; 
-        script.async = true;
+        // Load Font Awesome for icons
+        loadScript('font-awesome-script', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js');
 
-        script.onload = () => {
+        // Load Supabase and initialize the client
+        loadScript('supabase-js-script', 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2', () => {
             if (window.supabase) {
                 const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
                 setSupabase(supabaseClient);
@@ -101,43 +92,28 @@ export default function AdminDashboard() {
                 console.error("Supabase script loaded but `window.supabase` is not available.");
                 setError("Failed to initialize Supabase client.");
             }
-        };
+        });
 
-        script.onerror = () => {
-            console.error("Failed to load the Supabase script.");
-            setError("Could not load Supabase library. Check network connection.");
-        };
-
-        document.head.appendChild(script);
-
-        // Cleanup function
-        return () => {
-            const supabaseScript = document.getElementById(supabaseScriptId);
-            if (supabaseScript) {
-                 // In a multi-page app, you might want to reconsider removing scripts.
-                 // For this single component, it's fine.
-                // document.head.removeChild(supabaseScript);
-            }
-        };
-    }, []);
+    }, []); // Empty dependency array ensures this runs only once.
 
 
     // --- 3. FETCH APPOINTMENTS ---
+    // This effect runs when the Supabase client is successfully initialized.
     useEffect(() => {
         if (!supabase) {
-            return;
+            return; // Don't run if supabase client isn't ready
         }
 
         async function fetchAppointments() {
             setIsLoading(true);
             try {
-                const { data, error } = await supabase
+                const { data, error: fetchError } = await supabase
                     .from('appointments')
                     .select('*')
                     .order('created_at', { ascending: false });
 
-                if (error) throw error;
-                setAppointments(data);
+                if (fetchError) throw fetchError;
+                setAppointments(data || []);
             } catch (err) {
                 setError(err.message);
                 console.error("Error fetching appointments:", err);
@@ -147,7 +123,7 @@ export default function AdminDashboard() {
         }
         
         fetchAppointments();
-    }, [supabase]);
+    }, [supabase]); // Re-run if the supabase client object changes.
 
     // --- 4. UPDATE APPOINTMENT STATUS ---
     async function handleUpdateStatus(id, newStatus) {
@@ -157,19 +133,19 @@ export default function AdminDashboard() {
         }
         
         try {
-            const { error } = await supabase
+            const { error: updateError } = await supabase
                 .from('appointments')
                 .update({ status: newStatus })
                 .eq('id', id);
                 
-            if (error) throw error;
+            if (updateError) throw updateError;
 
+            // Update state locally for instant UI feedback
             setAppointments(currentAppointments =>
                 currentAppointments.map(app =>
                     app.id === id ? { ...app, status: newStatus } : app
                 )
             );
-
         } catch (err) {
             console.error("Error updating status:", err);
             setError("Failed to update appointment status.");
@@ -181,8 +157,8 @@ export default function AdminDashboard() {
     const confirmedCount = appointments.filter(app => app.status === 'confirmed').length;
 
     // --- RENDER LOGIC ---
-    if (!supabase && isLoading) {
-        return <div className="text-center p-8 text-slate-600">Initializing Admin Dashboard...</div>;
+    if (isLoading && !supabase) {
+        return <div className="text-center p-8 text-slate-600 text-lg">Initializing Admin Dashboard...</div>;
     }
     
     return (
@@ -206,8 +182,8 @@ export default function AdminDashboard() {
                     </div>
 
                     <div className="overflow-x-auto">
-                        {isLoading && supabase ? (
-                            <div className="text-center p-8">Loading appointments...</div>
+                        {isLoading ? (
+                            <div className="text-center p-8 text-slate-500">Loading appointments...</div>
                         ) : error ? (
                             <div className="text-center p-8 text-red-500">Error: {error}</div>
                         ) : filteredAppointments.length > 0 ? (
