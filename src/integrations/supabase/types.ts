@@ -13,38 +13,71 @@ export type Database = {
         Row: {
           appointment_date: string
           appointment_time: string
+          confirmed_at: string | null
+          confirmed_by: string | null
           created_at: string
+          email_sent: boolean | null
           id: string
           message: string | null
           patient_email: string
           patient_name: string
           patient_phone: string
+          sms_sent: boolean | null
           status: string
           updated_at: string
         }
         Insert: {
           appointment_date: string
           appointment_time: string
+          confirmed_at?: string | null
+          confirmed_by?: string | null
           created_at?: string
+          email_sent?: boolean | null
           id?: string
           message?: string | null
           patient_email: string
           patient_name: string
           patient_phone: string
+          sms_sent?: boolean | null
           status?: string
           updated_at?: string
         }
         Update: {
           appointment_date?: string
           appointment_time?: string
+          confirmed_at?: string | null
+          confirmed_by?: string | null
           created_at?: string
+          email_sent?: boolean | null
           id?: string
           message?: string | null
           patient_email?: string
           patient_name?: string
           patient_phone?: string
+          sms_sent?: boolean | null
           status?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string | null
+          id: string
+          role: Database["public"]["Enums"]["user_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["user_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["user_role"]
+          user_id?: string
         }
         Relationships: []
       }
@@ -63,9 +96,13 @@ export type Database = {
           time_slot: string
         }[]
       }
+      is_admin: {
+        Args: { user_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      user_role: "admin" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -180,6 +217,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      user_role: ["admin", "user"],
+    },
   },
 } as const
