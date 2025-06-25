@@ -20,7 +20,8 @@ const Admin = () => {
       const { data: { user } } = await supabase.auth.getUser();
       
       if (!user) {
-        navigate('/auth');
+        console.log('No user found, redirecting to home');
+        navigate('/');
         return;
       }
 

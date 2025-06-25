@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -248,7 +247,7 @@ const Index = () => {
                         ))
                       ) : (
                         !slotsLoading && (
-                          <SelectItem value="" disabled>
+                          <SelectItem value="no-slots" disabled>
                             No available slots for this date
                           </SelectItem>
                         )
