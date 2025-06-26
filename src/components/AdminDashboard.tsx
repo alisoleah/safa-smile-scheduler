@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
-import { CheckCircle, XCircle, Clock, MapPin } from 'lucide-react';
+import { CheckCircle, XCircle, Clock, MapPin, Tooth } from 'lucide-react';
 import {
   Table,
   TableBody,
@@ -35,7 +35,7 @@ const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [processingId, setProcessingId] = useState<string | null>(null);
 
-  const clinicAddress = "123 Health Street, Medical Center, City, State 12345";
+  const clinicAddress = "33 A Elkasr ELEINI St, Cairo, Egypt";
 
   useEffect(() => {
     fetchAppointments();
@@ -114,12 +114,20 @@ const AdminDashboard = () => {
   return (
     <div className="container mx-auto p-6 space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold">Admin Dashboard</h1>
+        <div className="flex items-center space-x-4">
+          <div className="bg-gradient-to-br from-sky-400 to-blue-600 p-3 rounded-xl shadow-lg">
+            <Tooth className="text-white" size={24} />
+          </div>
+          <div>
+            <h1 className="text-3xl font-bold">SAFA Dental Center</h1>
+            <p className="text-slate-600">Admin Dashboard</p>
+          </div>
+        </div>
         <Card className="p-4">
           <div className="flex items-center gap-2">
             <MapPin className="w-4 h-4" />
             <span 
-              className="text-sm cursor-pointer text-blue-600 hover:text-blue-800 underline"
+              className="text-sm cursor-pointer text-sky-600 hover:text-sky-800 underline"
               onClick={openInGoogleMaps}
             >
               {clinicAddress}
@@ -189,6 +197,7 @@ const AdminDashboard = () => {
                             size="sm"
                             onClick={() => handleAppointmentAction(appointment.id, 'confirm')}
                             disabled={processingId === appointment.id}
+                            className="bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700"
                           >
                             {processingId === appointment.id ? 'Processing...' : 'Confirm'}
                           </Button>

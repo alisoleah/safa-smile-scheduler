@@ -17,10 +17,10 @@ const ClickableAddress = ({ address, className = "" }: ClickableAddressProps) =>
     <Button
       variant="ghost"
       onClick={openInGoogleMaps}
-      className={`flex items-center gap-2 h-auto p-2 text-left hover:bg-blue-50 ${className}`}
+      className={`flex items-center gap-2 h-auto p-2 text-left hover:bg-sky-50 ${className}`}
     >
-      <MapPin className="w-4 h-4 text-blue-600" />
-      <span className="text-blue-600 hover:text-blue-800 underline">
+      <MapPin className="w-4 h-4 text-sky-600" />
+      <span className="text-sky-600 hover:text-sky-800 underline">
         {address}
       </span>
     </Button>
