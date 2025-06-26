@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
-import { Calendar, Clock, MapPin, Phone, Mail, User, Tooth, Seedling, UserMd, Star } from "lucide-react";
+import { Calendar, Clock, MapPin, Phone, Mail, User, Heart, Sprout, Stethoscope, Star } from "lucide-react";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -104,7 +104,7 @@ const Index = () => {
 
   const services = [
     {
-      icon: Tooth,
+      icon: Heart,
       title: "Cosmetic Fillings",
       arabicTitle: "حشوات تجميلية",
       description: "Durable, tooth-colored fillings that restore your teeth while maintaining their natural appearance.",
@@ -112,7 +112,7 @@ const Index = () => {
       image: "https://images.unsplash.com/photo-1606811841689-23dfddce3e95?q=80&w=800&auto=format&fit=crop"
     },
     {
-      icon: Seedling,
+      icon: Sprout,
       title: "Dental Implants", 
       arabicTitle: "زراعة اسنان",
       description: "A permanent, reliable solution for missing teeth that looks and functions naturally.",
@@ -120,7 +120,7 @@ const Index = () => {
       image: "https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?q=80&w=800&auto=format&fit=crop"
     },
     {
-      icon: UserMd,
+      icon: Stethoscope,
       title: "Maxillofacial Surgery",
       arabicTitle: "جراحات الوجه و الفكين", 
       description: "Specialized surgical procedures for complex dental and facial conditions by expert surgeons.",
@@ -194,7 +194,7 @@ const Index = () => {
         <div className="text-center mb-8">
           <div className="flex items-center justify-center mb-4">
             <div className="bg-gradient-to-br from-sky-400 to-blue-600 p-3 rounded-xl shadow-lg mr-4">
-              <Tooth className="text-white text-3xl" size={32} />
+              <Heart className="text-white text-3xl" size={32} />
             </div>
             <div>
               <h1 className="text-4xl font-bold text-slate-800 mb-1">SAFA Dental Center</h1>

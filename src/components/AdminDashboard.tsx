@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
-import { CheckCircle, XCircle, Clock, MapPin, Tooth } from 'lucide-react';
+import { CheckCircle, XCircle, Clock, MapPin, Heart } from 'lucide-react';
 import {
   Table,
   TableBody,
@@ -116,7 +116,7 @@ const AdminDashboard = () => {
       <div className="flex justify-between items-center">
         <div className="flex items-center space-x-4">
           <div className="bg-gradient-to-br from-sky-400 to-blue-600 p-3 rounded-xl shadow-lg">
-            <Tooth className="text-white" size={24} />
+            <Heart className="text-white" size={24} />
           </div>
           <div>
             <h1 className="text-3xl font-bold">SAFA Dental Center</h1>
