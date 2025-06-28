@@ -42,7 +42,7 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error('Appointment not found');
     }
 
-    const clinicAddress = "123 Health Street, Medical Center, City, State 12345";
+    const clinicAddress = "33 A Elkasr ELEINI St, Cairo, Egypt";
     const statusText = action === 'confirm' ? 'confirmed' : 'cancelled';
     
     // Send Email
@@ -61,11 +61,11 @@ const handler = async (req: Request): Promise<Response> => {
          <p><a href="https://maps.google.com/?q=${encodeURIComponent(clinicAddress)}" target="_blank">Click here to view location on Google Maps</a></p>` : 
         '<p>If you need to reschedule, please contact us.</p>'
       }
-      <p>Best regards,<br>Medical Center Team</p>
+      <p>Best regards,<br>SAFA Dental Center Team</p>
     `;
 
     const emailResponse = await resend.emails.send({
-      from: 'Medical Center <onboarding@resend.dev>',
+      from: 'SAFA Dental Center <onboarding@resend.dev>',
       to: [appointment.patient_email],
       subject: emailSubject,
       html: emailHtml,
