@@ -23,6 +23,25 @@ interface NotificationRequest {
   action: 'confirm' | 'cancel';
 }
 
+// Function to format Egyptian phone numbers for Twilio
+const formatPhoneNumber = (phone: string): string => {
+  // Remove any non-digit characters
+  const cleaned = phone.replace(/\D/g, '');
+  
+  // If it starts with 01 (Egyptian mobile), format it properly
+  if (cleaned.startsWith('01') && cleaned.length === 11) {
+    return `+2${cleaned}`;
+  }
+  
+  // If it already has country code
+  if (cleaned.startsWith('201') && cleaned.length === 13) {
+    return `+${cleaned}`;
+  }
+  
+  // Default fallback - add Egypt country code
+  return `+20${cleaned}`;
+};
+
 const handler = async (req: Request): Promise<Response> => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -73,6 +92,10 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log('Email sent:', emailResponse);
 
+    // Format phone number for Twilio
+    const formattedPhone = formatPhoneNumber(appointment.patient_phone);
+    console.log('Original phone:', appointment.patient_phone, 'Formatted phone:', formattedPhone);
+
     // Send SMS
     const smsMessage = action === 'confirm' 
       ? `Hi ${appointment.patient_name}, your appointment on ${new Date(appointment.appointment_date).toLocaleDateString()} at ${appointment.appointment_time} has been confirmed. Address: ${clinicAddress}. View on maps: https://maps.google.com/?q=${encodeURIComponent(clinicAddress)}`
@@ -86,7 +109,7 @@ const handler = async (req: Request): Promise<Response> => {
       },
       body: new URLSearchParams({
         From: twilioPhoneNumber,
-        To: appointment.patient_phone,
+        To: formattedPhone,
         Body: smsMessage,
       }),
     });
