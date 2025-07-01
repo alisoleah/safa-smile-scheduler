@@ -42,6 +42,35 @@ const formatPhoneNumber = (phone: string): string => {
   return `+20${cleaned}`;
 };
 
+// Function to validate Twilio credentials
+const validateTwilioCredentials = (): boolean => {
+  const requiredVars = {
+    TWILIO_ACCOUNT_SID: twilioAccountSid,
+    TWILIO_AUTH_TOKEN: twilioAuthToken,
+    TWILIO_PHONE_NUMBER: twilioPhoneNumber
+  };
+
+  for (const [name, value] of Object.entries(requiredVars)) {
+    if (!value) {
+      console.error(`Missing required environment variable: ${name}`);
+      return false;
+    }
+  }
+
+  // Basic format validation
+  if (!twilioAccountSid.startsWith('AC') || twilioAccountSid.length !== 34) {
+    console.error('Invalid TWILIO_ACCOUNT_SID format');
+    return false;
+  }
+
+  if (twilioAuthToken.length !== 32) {
+    console.error('Invalid TWILIO_AUTH_TOKEN format');
+    return false;
+  }
+
+  return true;
+};
+
 const handler = async (req: Request): Promise<Response> => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -49,6 +78,12 @@ const handler = async (req: Request): Promise<Response> => {
 
   try {
     const { appointmentId, action }: NotificationRequest = await req.json();
+    console.log(`Processing ${action} for appointment ${appointmentId}`);
+
+    // Validate Twilio credentials first
+    if (!validateTwilioCredentials()) {
+      throw new Error('Invalid Twilio configuration');
+    }
 
     // Get appointment details
     const { data: appointment, error: appointmentError } = await supabase
@@ -58,8 +93,11 @@ const handler = async (req: Request): Promise<Response> => {
       .single();
 
     if (appointmentError || !appointment) {
+      console.error('Appointment error:', appointmentError);
       throw new Error('Appointment not found');
     }
+
+    console.log('Processing appointment for:', appointment.patient_name);
 
     const clinicAddress = "33 A Elkasr ELEINI St, Cairo, Egypt";
     const statusText = action === 'confirm' ? 'confirmed' : 'cancelled';
@@ -90,16 +128,23 @@ const handler = async (req: Request): Promise<Response> => {
       html: emailHtml,
     });
 
-    console.log('Email sent:', emailResponse);
+    console.log('Email sent successfully:', emailResponse);
 
     // Format phone number for Twilio
     const formattedPhone = formatPhoneNumber(appointment.patient_phone);
-    console.log('Original phone:', appointment.patient_phone, 'Formatted phone:', formattedPhone);
+    console.log('Phone number formatting:');
+    console.log('  Original:', appointment.patient_phone);
+    console.log('  Formatted:', formattedPhone);
 
-    // Send SMS
+    // Send SMS with enhanced error handling
     const smsMessage = action === 'confirm' 
       ? `Hi ${appointment.patient_name}, your appointment on ${new Date(appointment.appointment_date).toLocaleDateString()} at ${appointment.appointment_time} has been confirmed. Address: ${clinicAddress}. View on maps: https://maps.google.com/?q=${encodeURIComponent(clinicAddress)}`
       : `Hi ${appointment.patient_name}, your appointment on ${new Date(appointment.appointment_date).toLocaleDateString()} at ${appointment.appointment_time} has been cancelled. Please contact us to reschedule.`;
+
+    console.log('SMS Details:');
+    console.log('  From:', twilioPhoneNumber);
+    console.log('  To:', formattedPhone);
+    console.log('  Message length:', smsMessage.length);
 
     const smsResponse = await fetch(`https://api.twilio.com/2010-04-01/Accounts/${twilioAccountSid}/Messages.json`, {
       method: 'POST',
@@ -115,28 +160,70 @@ const handler = async (req: Request): Promise<Response> => {
     });
 
     const smsResult = await smsResponse.json();
-    console.log('SMS sent:', smsResult);
+    
+    // Enhanced SMS error logging
+    if (!smsResponse.ok) {
+      console.error('SMS sending failed:');
+      console.error('  Status:', smsResponse.status);
+      console.error('  Response:', smsResult);
+      
+      // Check for specific Twilio error codes
+      if (smsResult.code) {
+        console.error('  Twilio Error Code:', smsResult.code);
+        console.error('  Twilio Error Message:', smsResult.message);
+        
+        // Common Twilio error codes for Egypt/international SMS
+        switch (smsResult.code) {
+          case 21408:
+            console.error('  → Permission to send SMS has not been enabled for Egypt');
+            break;
+          case 21211:
+            console.error('  → Invalid "To" phone number');
+            break;
+          case 21212:
+            console.error('  → Invalid "From" phone number');
+            break;
+          case 21601:
+            console.error('  → Phone number is not a valid mobile number');
+            break;
+          case 21614:
+            console.error('  → "To" number is not a valid mobile number');
+            break;
+          default:
+            console.error('  → Unknown Twilio error');
+        }
+      }
+    } else {
+      console.log('SMS sent successfully:', smsResult);
+    }
 
     // Update appointment status and notification flags
+    const updateData = {
+      status: statusText,
+      email_sent: true,
+      // Only mark SMS as sent if it was actually successful
+      sms_sent: smsResponse.ok,
+      confirmed_at: action === 'confirm' ? new Date().toISOString() : null,
+    };
+
     const { error: updateError } = await supabase
       .from('appointments')
-      .update({
-        status: statusText,
-        email_sent: true,
-        sms_sent: true,
-        confirmed_at: action === 'confirm' ? new Date().toISOString() : null,
-      })
+      .update(updateData)
       .eq('id', appointmentId);
 
     if (updateError) {
       console.error('Error updating appointment:', updateError);
+    } else {
+      console.log('Appointment updated successfully');
     }
 
     return new Response(
       JSON.stringify({ 
         success: true, 
         email: emailResponse,
-        sms: smsResult 
+        sms: smsResult,
+        sms_sent: smsResponse.ok,
+        phone_formatted: formattedPhone
       }),
       { 
         status: 200, 
