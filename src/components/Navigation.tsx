@@ -1,11 +1,11 @@
 
 import { useState } from 'react';
-import { Menu, X, Phone, Mail, MapPin, Globe } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Menu, X, Phone, Mail, Globe } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isArabic, setIsArabic] = useState(false);
+  const { isArabic, toggleLanguage, t } = useLanguage();
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
@@ -15,22 +15,12 @@ const Navigation = () => {
     setIsMenuOpen(false);
   };
 
-  const toggleLanguage = () => {
-    setIsArabic(!isArabic);
-  };
-
-  const menuItems = isArabic ? [
-    { name: 'الرئيسية', action: () => scrollToSection('home') },
-    { name: 'الخدمات', action: () => scrollToSection('services') },
-    { name: 'اتصل بنا', action: () => scrollToSection('contact') },
-    { name: 'احجز موعد', action: () => scrollToSection('appointment') },
-    { name: 'التشخيص', action: () => scrollToSection('diagnosis') }
-  ] : [
-    { name: 'Home', action: () => scrollToSection('home') },
-    { name: 'Services', action: () => scrollToSection('services') },
-    { name: 'Contact Us', action: () => scrollToSection('contact') },
-    { name: 'Schedule a Visit', action: () => scrollToSection('appointment') },
-    { name: 'Diagnosis', action: () => scrollToSection('diagnosis') }
+  const menuItems = [
+    { name: t('home'), action: () => scrollToSection('home') },
+    { name: t('services'), action: () => scrollToSection('services') },
+    { name: t('contactUs'), action: () => scrollToSection('contact') },
+    { name: t('scheduleVisit'), action: () => scrollToSection('appointment') },
+    { name: t('diagnosis'), action: () => scrollToSection('diagnosis') }
   ];
 
   return (
@@ -38,7 +28,7 @@ const Navigation = () => {
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center py-4">
           {/* Logo */}
-          <div className="flex items-center space-x-3">
+          <div className={`flex items-center space-x-3 ${isArabic ? 'flex-row-reverse space-x-reverse' : ''}`}>
             <div className="bg-gradient-to-br from-sky-400 to-blue-600 p-2 rounded-lg">
               <img 
                 src="/lovable-uploads/7fd75df0-7b05-4b90-9328-a1f1817bab0d.png" 
@@ -57,7 +47,7 @@ const Navigation = () => {
           </div>
 
           {/* Desktop Menu */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className={`hidden md:flex items-center space-x-8 ${isArabic ? 'flex-row-reverse space-x-reverse' : ''}`}>
             {menuItems.map((item, index) => (
               <button
                 key={index}
@@ -71,7 +61,7 @@ const Navigation = () => {
             {/* Language Toggle */}
             <button
               onClick={toggleLanguage}
-              className="flex items-center space-x-1 text-slate-700 hover:text-sky-600 font-medium transition-colors duration-200"
+              className={`flex items-center space-x-1 text-slate-700 hover:text-sky-600 font-medium transition-colors duration-200 ${isArabic ? 'flex-row-reverse space-x-reverse' : ''}`}
             >
               <Globe size={16} />
               <span>{isArabic ? 'EN' : 'العربية'}</span>
@@ -79,12 +69,12 @@ const Navigation = () => {
           </div>
 
           {/* Contact Info */}
-          <div className="hidden lg:flex items-center space-x-4 text-sm text-slate-600">
-            <div className="flex items-center space-x-1">
+          <div className={`hidden lg:flex items-center space-x-4 text-sm text-slate-600 ${isArabic ? 'flex-row-reverse space-x-reverse' : ''}`}>
+            <div className={`flex items-center space-x-1 ${isArabic ? 'flex-row-reverse space-x-reverse' : ''}`}>
               <Phone size={16} />
               <span>010 04500116</span>
             </div>
-            <div className="flex items-center space-x-1">
+            <div className={`flex items-center space-x-1 ${isArabic ? 'flex-row-reverse space-x-reverse' : ''}`}>
               <Mail size={16} />
               <span>dr.hesham_dent@hotmail.com</span>
             </div>
@@ -107,7 +97,7 @@ const Navigation = () => {
                 <button
                   key={index}
                   onClick={item.action}
-                  className="text-slate-700 hover:text-sky-600 font-medium text-left transition-colors duration-200"
+                  className={`text-slate-700 hover:text-sky-600 font-medium transition-colors duration-200 ${isArabic ? 'text-right' : 'text-left'}`}
                 >
                   {item.name}
                 </button>
@@ -116,19 +106,19 @@ const Navigation = () => {
               {/* Language Toggle */}
               <button
                 onClick={toggleLanguage}
-                className="flex items-center space-x-2 text-slate-700 hover:text-sky-600 font-medium transition-colors duration-200"
+                className={`flex items-center space-x-2 text-slate-700 hover:text-sky-600 font-medium transition-colors duration-200 ${isArabic ? 'flex-row-reverse space-x-reverse' : ''}`}
               >
                 <Globe size={16} />
-                <span>{isArabic ? 'Switch to English' : 'التبديل إلى العربية'}</span>
+                <span>{t('switchToEnglish')}</span>
               </button>
               
               <div className="pt-4 border-t">
                 <div className="flex flex-col space-y-2 text-sm text-slate-600">
-                  <div className="flex items-center space-x-2">
+                  <div className={`flex items-center space-x-2 ${isArabic ? 'flex-row-reverse space-x-reverse' : ''}`}>
                     <Phone size={16} />
                     <span>010 04500116</span>
                   </div>
-                  <div className="flex items-center space-x-2">
+                  <div className={`flex items-center space-x-2 ${isArabic ? 'flex-row-reverse space-x-reverse' : ''}`}>
                     <Mail size={16} />
                     <span>dr.hesham_dent@hotmail.com</span>
                   </div>

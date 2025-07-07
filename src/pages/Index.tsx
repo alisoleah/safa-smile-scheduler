@@ -11,8 +11,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import Navigation from "@/components/Navigation";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const Index = () => {
+  const { isArabic, t } = useLanguage();
   const [formData, setFormData] = useState({
     patient_name: "",
     patient_email: "",
@@ -104,25 +106,22 @@ const Index = () => {
   const services = [
     {
       icon: Heart,
-      title: "Cosmetic Fillings",
-      arabicTitle: "حشوات تجميلية",
-      description: "Durable, tooth-colored fillings that restore your teeth while maintaining their natural appearance.",
+      title: t('cosmeticFillings'),
+      description: t('cosmeticFillingsDesc'),
       gradient: "from-sky-500 to-blue-600",
       image: "https://images.unsplash.com/photo-1606811841689-23dfddce3e95?q=80&w=800&auto=format&fit=crop"
     },
     {
       icon: Sprout,
-      title: "Dental Implants", 
-      arabicTitle: "زراعة اسنان",
-      description: "A permanent, reliable solution for missing teeth that looks and functions naturally.",
+      title: t('dentalImplants'),
+      description: t('dentalImplantsDesc'),
       gradient: "from-emerald-500 to-teal-600",
       image: "https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?q=80&w=800&auto=format&fit=crop"
     },
     {
       icon: Stethoscope,
-      title: "Maxillofacial Surgery",
-      arabicTitle: "جراحات الوجه و الفكين", 
-      description: "Specialized surgical procedures for complex dental and facial conditions by expert surgeons.",
+      title: t('maxillofacialSurgery'),
+      description: t('maxillofacialSurgeryDesc'),
       gradient: "from-purple-500 to-indigo-600",
       image: "https://images.unsplash.com/photo-1551601651-2a8555f1a136?q=80&w=800&auto=format&fit=crop"
     }
@@ -131,21 +130,21 @@ const Index = () => {
   const teamMembers = [
     {
       name: "Dr. Hesham",
-      specialty: "Lead Dentist & Oral Surgeon",
+      specialty: t('leadDentist'),
       image: "https://images.unsplash.com/photo-1622253692010-33352da69e0d?q=80&w=800&auto=format&fit=crop",
-      experience: "15+ years"
+      experience: `15+ ${t('experience')}`
     },
     {
       name: "Dr. Sarah Ahmed",
-      specialty: "Cosmetic Dentist",
+      specialty: t('cosmeticDentist'),
       image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?q=80&w=800&auto=format&fit=crop",
-      experience: "12+ years"
+      experience: `12+ ${t('experience')}`
     },
     {
       name: "Dr. Mohamed Ali",
-      specialty: "Orthodontist",
+      specialty: t('orthodontist'),
       image: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?q=80&w=800&auto=format&fit=crop",
-      experience: "10+ years"
+      experience: `10+ ${t('experience')}`
     }
   ];
 
@@ -153,17 +152,17 @@ const Index = () => {
     {
       name: "Ahmed Hassan",
       rating: 5,
-      text: "Excellent service and caring staff. Dr. Hesham helped me get my perfect smile with dental implants."
+      text: t('testimonial1')
     },
     {
       name: "Fatma Mohamed",
       rating: 5,
-      text: "The best dental center in Cairo. Professional, caring, and always available when needed."
+      text: t('testimonial2')
     },
     {
       name: "Omar Mahmoud",
       rating: 5,
-      text: "Outstanding care for my entire family. Highly recommend their dental services."
+      text: t('testimonial3')
     }
   ];
 
@@ -178,15 +177,14 @@ const Index = () => {
           <section className="bg-gradient-to-br from-sky-500 to-sky-700 text-white rounded-3xl mb-12 relative overflow-hidden">
             <div className="container mx-auto px-6 py-20 text-center relative z-10">
               <h2 className="text-5xl md:text-6xl font-bold leading-tight mb-6">
-                Your Smile, <span className="text-yellow-300">Our Passion</span>
+                {t('heroTitle').split(', ')[0]}, <span className="text-yellow-300">{t('heroTitle').split(', ')[1]}</span>
               </h2>
               <p className="text-xl text-sky-100 max-w-4xl mx-auto mb-10 leading-relaxed">
-                Providing the highest quality dental care, with a gentle touch, in a friendly and modern environment. 
-                Let us help you achieve the healthy, beautiful smile you deserve.
+                {t('heroSubtitle')}
               </p>
               <a href="#appointment" className="inline-block bg-white text-sky-600 font-bold px-8 py-4 rounded-xl hover:bg-slate-100 transition-all duration-300 transform hover:scale-105 shadow-xl">
-                <Calendar className="inline mr-2" size={20} />
-                Schedule a Visit
+                <Calendar className={`inline ${isArabic ? 'ml-2' : 'mr-2'}`} size={20} />
+                {t('scheduleVisit')}
               </a>
             </div>
           </section>
@@ -194,29 +192,29 @@ const Index = () => {
           {/* Contact Info */}
           <div id="contact" className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
             <Card className="hover:shadow-lg transition-shadow">
-              <CardContent className="flex items-center space-x-3 p-6">
+              <CardContent className={`flex items-center space-x-3 p-6 ${isArabic ? 'flex-row-reverse space-x-reverse' : ''}`}>
                 <Phone className="text-sky-600" size={24} />
                 <div>
-                  <p className="font-semibold">Phone</p>
+                  <p className="font-semibold">{t('phone')}</p>
                   <p className="text-gray-600">010 04500116</p>
                 </div>
               </CardContent>
             </Card>
             <Card className="hover:shadow-lg transition-shadow">
-              <CardContent className="flex items-center space-x-3 p-6">
+              <CardContent className={`flex items-center space-x-3 p-6 ${isArabic ? 'flex-row-reverse space-x-reverse' : ''}`}>
                 <Mail className="text-sky-600" size={24} />
                 <div>
-                  <p className="font-semibold">Email</p>
+                  <p className="font-semibold">{t('email')}</p>
                   <p className="text-gray-600">dr.hesham_dent@hotmail.com</p>
                 </div>
               </CardContent>
             </Card>
             <Card className="hover:shadow-lg transition-shadow">
-              <CardContent className="flex items-center space-x-3 p-6">
+              <CardContent className={`flex items-center space-x-3 p-6 ${isArabic ? 'flex-row-reverse space-x-reverse' : ''}`}>
                 <Clock className="text-sky-600" size={24} />
                 <div>
-                  <p className="font-semibold">Hours</p>
-                  <p className="text-gray-600">Mon-Thu & Sat-Sun: 12PM-10PM</p>
+                  <p className="font-semibold">{t('hours')}</p>
+                  <p className="text-gray-600">{t('workingHours')}</p>
                 </div>
               </CardContent>
             </Card>
@@ -226,11 +224,11 @@ const Index = () => {
           <section id="services" className="mb-12">
             <h2 className="text-4xl font-bold text-center mb-4">
               <span className="bg-gradient-to-r from-sky-500 to-blue-600 bg-clip-text text-transparent">
-                Our Premium Services
+                {t('servicesTitle')}
               </span>
             </h2>
             <p className="text-slate-600 text-lg text-center max-w-3xl mx-auto mb-12 leading-relaxed">
-              We offer a comprehensive range of dental services using the latest technology to ensure your comfort and satisfaction.
+              {t('servicesSubtitle')}
             </p>
             
             <div className="max-w-6xl mx-auto">
@@ -240,13 +238,10 @@ const Index = () => {
                     <CarouselItem key={index}>
                       <Card className={`text-center hover:shadow-xl transition-shadow bg-gradient-to-br ${service.gradient} text-white overflow-hidden`}>
                         <CardContent className="p-0">
-                          <div className="flex flex-col md:flex-row items-center h-full">
+                          <div className={`flex flex-col md:flex-row items-center h-full ${isArabic ? 'md:flex-row-reverse' : ''}`}>
                             <div className="md:w-1/2 p-8 md:p-12 text-center md:text-left">
-                              <service.icon className="mx-auto md:mx-0 mb-6 opacity-80" size={64} />
+                              <service.icon className={`mx-auto ${isArabic ? 'md:mx-0' : 'md:mx-0'} mb-6 opacity-80`} size={64} />
                               <h3 className="text-3xl font-bold mb-4">{service.title}</h3>
-                              <p className="text-2xl font-semibold mb-4" style={{fontFamily: 'Cairo'}} dir="rtl">
-                                {service.arabicTitle}
-                              </p>
                               <p className="text-lg leading-relaxed">{service.description}</p>
                             </div>
                             <div className="md:w-1/2 h-64 md:h-80">
@@ -273,11 +268,11 @@ const Index = () => {
             <div className="text-center mb-12">
               <h2 className="text-4xl font-bold mb-4">
                 <span className="bg-gradient-to-r from-sky-500 to-blue-600 bg-clip-text text-transparent">
-                  Professional Diagnosis
+                  {t('diagnosisTitle')}
                 </span>
               </h2>
               <p className="text-slate-600 text-lg max-w-3xl mx-auto leading-relaxed">
-                Our comprehensive diagnostic services help identify dental issues early, ensuring the best treatment outcomes for your oral health.
+                {t('diagnosisSubtitle')}
               </p>
             </div>
             
@@ -287,8 +282,8 @@ const Index = () => {
                   <div className="bg-gradient-to-br from-sky-500 to-blue-600 p-3 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
                     <Stethoscope className="text-white" size={24} />
                   </div>
-                  <h3 className="text-xl font-semibold mb-3">Digital X-Rays</h3>
-                  <p className="text-gray-600">Advanced digital imaging for accurate diagnosis with minimal radiation exposure.</p>
+                  <h3 className="text-xl font-semibold mb-3">{t('digitalXrays')}</h3>
+                  <p className="text-gray-600">{t('digitalXraysDesc')}</p>
                 </CardContent>
               </Card>
               
@@ -297,8 +292,8 @@ const Index = () => {
                   <div className="bg-gradient-to-br from-emerald-500 to-teal-600 p-3 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
                     <Heart className="text-white" size={24} />
                   </div>
-                  <h3 className="text-xl font-semibold mb-3">Oral Health Assessment</h3>
-                  <p className="text-gray-600">Comprehensive evaluation of your teeth, gums, and overall oral health condition.</p>
+                  <h3 className="text-xl font-semibold mb-3">{t('oralHealthAssessment')}</h3>
+                  <p className="text-gray-600">{t('oralHealthAssessmentDesc')}</p>
                 </CardContent>
               </Card>
               
@@ -307,8 +302,8 @@ const Index = () => {
                   <div className="bg-gradient-to-br from-purple-500 to-indigo-600 p-3 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
                     <User className="text-white" size={24} />
                   </div>
-                  <h3 className="text-xl font-semibold mb-3">Personalized Treatment Plans</h3>
-                  <p className="text-gray-600">Customized treatment recommendations based on your specific needs and goals.</p>
+                  <h3 className="text-xl font-semibold mb-3">{t('personalizedTreatment')}</h3>
+                  <p className="text-gray-600">{t('personalizedTreatmentDesc')}</p>
                 </CardContent>
               </Card>
             </div>
@@ -316,7 +311,7 @@ const Index = () => {
 
           {/* About Section */}
           <section id="about" className="mb-12">
-            <div className="flex flex-col lg:flex-row items-center gap-16">
+            <div className={`flex flex-col lg:flex-row items-center gap-16 ${isArabic ? 'lg:flex-row-reverse' : ''}`}>
               <div className="lg:w-1/2">
                 <img 
                   src="https://images.unsplash.com/photo-1622253692010-33352da69e0d?q=80&w=800&auto=format&fit=crop" 
@@ -327,17 +322,14 @@ const Index = () => {
               <div className="lg:w-1/2">
                 <h2 className="text-4xl md:text-5xl font-bold mb-8">
                   <span className="bg-gradient-to-r from-sky-500 to-blue-600 bg-clip-text text-transparent">
-                    Welcome to SAFA Dental Center
+                    {t('welcomeTitle')}
                   </span>
                 </h2>
                 <p className="text-slate-600 mb-6 text-lg leading-relaxed">
-                  At SAFA Dental Center, we believe that a healthy smile is a gateway to a happy life. 
-                  Our lead dentist, <strong className="text-sky-600">Dr. Hesham</strong>, and his dedicated team 
-                  are committed to providing personalized and compassionate dental care.
+                  {t('welcomeText1')}
                 </p>
                 <p className="text-slate-600 mb-8 text-lg leading-relaxed">
-                  We combine state-of-the-art technology with years of expertise to ensure your visits 
-                  are comfortable, efficient, and effective.
+                  {t('welcomeText2')}
                 </p>
               </div>
             </div>
@@ -345,7 +337,7 @@ const Index = () => {
 
           {/* Team Section */}
           <section className="mb-12">
-            <h2 className="text-3xl font-bold text-center mb-8">Meet Our Expert Team</h2>
+            <h2 className="text-3xl font-bold text-center mb-8">{t('teamTitle')}</h2>
             <div className="max-w-4xl mx-auto">
               <Carousel className="w-full">
                 <CarouselContent>
@@ -360,7 +352,7 @@ const Index = () => {
                           />
                           <h3 className="text-xl font-semibold mb-1">{member.name}</h3>
                           <p className="text-sky-600 mb-2">{member.specialty}</p>
-                          <p className="text-gray-600 text-sm">{member.experience} experience</p>
+                          <p className="text-gray-600 text-sm">{member.experience}</p>
                         </CardContent>
                       </Card>
                     </CarouselItem>
@@ -374,7 +366,7 @@ const Index = () => {
 
           {/* Testimonials Section */}
           <section className="mb-12">
-            <h2 className="text-3xl font-bold text-center mb-8">What Our Patients Say</h2>
+            <h2 className="text-3xl font-bold text-center mb-8">{t('testimonialsTitle')}</h2>
             <div className="max-w-4xl mx-auto">
               <Carousel className="w-full">
                 <CarouselContent>
@@ -404,21 +396,21 @@ const Index = () => {
           <section id="appointment">
             <Card className="max-w-3xl mx-auto bg-white shadow-2xl">
               <CardHeader className="text-center">
-                <CardTitle className="flex items-center justify-center space-x-2 text-4xl mb-4">
+                <CardTitle className={`flex items-center justify-center space-x-2 text-4xl mb-4 ${isArabic ? 'flex-row-reverse space-x-reverse' : ''}`}>
                   <Calendar className="text-sky-600" size={32} />
-                  <span>Book Your Appointment</span>
+                  <span>{t('bookAppointment')}</span>
                 </CardTitle>
                 <p className="text-slate-600 text-lg max-w-2xl mx-auto leading-relaxed">
-                  Ready to transform your smile? Fill out the form below and we'll contact you to confirm your visit.
+                  {t('appointmentSubtitle')}
                 </p>
               </CardHeader>
               <CardContent className="p-8">
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="patient_name" className="flex items-center space-x-2 font-semibold">
+                      <Label htmlFor="patient_name" className={`flex items-center space-x-2 font-semibold ${isArabic ? 'flex-row-reverse space-x-reverse' : ''}`}>
                         <User size={16} />
-                        <span>Full Name</span>
+                        <span>{t('fullName')}</span>
                       </Label>
                       <Input
                         id="patient_name"
@@ -426,15 +418,15 @@ const Index = () => {
                         value={formData.patient_name}
                         onChange={(e) => handleInputChange('patient_name', e.target.value)}
                         required
-                        placeholder="Enter your full name"
+                        placeholder={t('enterFullName')}
                         className="border-2 border-slate-200 focus:border-sky-500 rounded-xl px-4 py-3"
                       />
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="patient_phone" className="flex items-center space-x-2 font-semibold">
+                      <Label htmlFor="patient_phone" className={`flex items-center space-x-2 font-semibold ${isArabic ? 'flex-row-reverse space-x-reverse' : ''}`}>
                         <Phone size={16} />
-                        <span>Phone Number</span>
+                        <span>{t('phoneNumber')}</span>
                       </Label>
                       <Input
                         id="patient_phone"
@@ -442,16 +434,16 @@ const Index = () => {
                         value={formData.patient_phone}
                         onChange={(e) => handleInputChange('patient_phone', e.target.value)}
                         required
-                        placeholder="Enter your phone number"
+                        placeholder={t('enterPhone')}
                         className="border-2 border-slate-200 focus:border-sky-500 rounded-xl px-4 py-3"
                       />
                     </div>
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="patient_email" className="flex items-center space-x-2 font-semibold">
+                    <Label htmlFor="patient_email" className={`flex items-center space-x-2 font-semibold ${isArabic ? 'flex-row-reverse space-x-reverse' : ''}`}>
                       <Mail size={16} />
-                      <span>Email Address</span>
+                      <span>{t('emailAddress')}</span>
                     </Label>
                     <Input
                       id="patient_email"
@@ -459,15 +451,15 @@ const Index = () => {
                       value={formData.patient_email}
                       onChange={(e) => handleInputChange('patient_email', e.target.value)}
                       required
-                      placeholder="Enter your email"
+                      placeholder={t('enterEmail')}
                       className="border-2 border-slate-200 focus:border-sky-500 rounded-xl px-4 py-3"
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="appointment_date" className="flex items-center space-x-2 font-semibold">
+                    <Label htmlFor="appointment_date" className={`flex items-center space-x-2 font-semibold ${isArabic ? 'flex-row-reverse space-x-reverse' : ''}`}>
                       <Calendar size={16} />
-                      <span>Preferred Date</span>
+                      <span>{t('preferredDate')}</span>
                     </Label>
                     <Input
                       id="appointment_date"
@@ -482,9 +474,9 @@ const Index = () => {
 
                   {formData.appointment_date && (
                     <div className="space-y-2">
-                      <Label htmlFor="appointment_time" className="flex items-center space-x-2 font-semibold">
+                      <Label htmlFor="appointment_time" className={`flex items-center space-x-2 font-semibold ${isArabic ? 'flex-row-reverse space-x-reverse' : ''}`}>
                         <Clock size={16} />
-                        <span>Available Time Slots</span>
+                        <span>{t('availableTimeSlots')}</span>
                       </Label>
                       <Select
                         value={formData.appointment_time}
@@ -492,7 +484,7 @@ const Index = () => {
                         required
                       >
                         <SelectTrigger className="border-2 border-slate-200 focus:border-sky-500 rounded-xl px-4 py-3">
-                          <SelectValue placeholder={slotsLoading ? "Loading slots..." : "Select a time slot"} />
+                          <SelectValue placeholder={slotsLoading ? t('loadingSlots') : t('selectTimeSlot')} />
                         </SelectTrigger>
                         <SelectContent>
                           {availableSlots.length > 0 ? (
@@ -504,7 +496,7 @@ const Index = () => {
                           ) : (
                             !slotsLoading && (
                               <SelectItem value="no-slots" disabled>
-                                No available slots for this date
+                                {t('noSlots')}
                               </SelectItem>
                             )
                           )}
@@ -514,12 +506,12 @@ const Index = () => {
                   )}
 
                   <div className="space-y-2">
-                    <Label htmlFor="message" className="font-semibold">Additional Message (Optional)</Label>
+                    <Label htmlFor="message" className="font-semibold">{t('additionalMessage')}</Label>
                     <Textarea
                       id="message"
                       value={formData.message}
                       onChange={(e) => handleInputChange('message', e.target.value)}
-                      placeholder="Any additional information or special requests"
+                      placeholder={t('additionalInfo')}
                       rows={4}
                       className="border-2 border-slate-200 focus:border-sky-500 rounded-xl px-4 py-3 resize-none"
                     />
@@ -530,10 +522,10 @@ const Index = () => {
                     className="w-full bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white font-bold px-8 py-4 rounded-xl text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300" 
                     disabled={loading || !formData.appointment_time}
                   >
-                    {loading ? 'Booking...' : (
+                    {loading ? t('booking') : (
                       <>
-                        <Calendar className="mr-2" size={20} />
-                        Request Appointment
+                        <Calendar className={`${isArabic ? 'ml-2' : 'mr-2'}`} size={20} />
+                        {t('requestAppointment')}
                       </>
                     )}
                   </Button>
