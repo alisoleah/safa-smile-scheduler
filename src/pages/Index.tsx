@@ -268,6 +268,52 @@ const Index = () => {
             </div>
           </section>
 
+          {/* Diagnosis Section */}
+          <section id="diagnosis" className="mb-12">
+            <div className="text-center mb-12">
+              <h2 className="text-4xl font-bold mb-4">
+                <span className="bg-gradient-to-r from-sky-500 to-blue-600 bg-clip-text text-transparent">
+                  Professional Diagnosis
+                </span>
+              </h2>
+              <p className="text-slate-600 text-lg max-w-3xl mx-auto leading-relaxed">
+                Our comprehensive diagnostic services help identify dental issues early, ensuring the best treatment outcomes for your oral health.
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <Card className="hover:shadow-lg transition-shadow">
+                <CardContent className="p-6 text-center">
+                  <div className="bg-gradient-to-br from-sky-500 to-blue-600 p-3 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                    <Stethoscope className="text-white" size={24} />
+                  </div>
+                  <h3 className="text-xl font-semibold mb-3">Digital X-Rays</h3>
+                  <p className="text-gray-600">Advanced digital imaging for accurate diagnosis with minimal radiation exposure.</p>
+                </CardContent>
+              </Card>
+              
+              <Card className="hover:shadow-lg transition-shadow">
+                <CardContent className="p-6 text-center">
+                  <div className="bg-gradient-to-br from-emerald-500 to-teal-600 p-3 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                    <Heart className="text-white" size={24} />
+                  </div>
+                  <h3 className="text-xl font-semibold mb-3">Oral Health Assessment</h3>
+                  <p className="text-gray-600">Comprehensive evaluation of your teeth, gums, and overall oral health condition.</p>
+                </CardContent>
+              </Card>
+              
+              <Card className="hover:shadow-lg transition-shadow">
+                <CardContent className="p-6 text-center">
+                  <div className="bg-gradient-to-br from-purple-500 to-indigo-600 p-3 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                    <User className="text-white" size={24} />
+                  </div>
+                  <h3 className="text-xl font-semibold mb-3">Personalized Treatment Plans</h3>
+                  <p className="text-gray-600">Customized treatment recommendations based on your specific needs and goals.</p>
+                </CardContent>
+              </Card>
+            </div>
+          </section>
+
           {/* About Section */}
           <section id="about" className="mb-12">
             <div className="flex flex-col lg:flex-row items-center gap-16">

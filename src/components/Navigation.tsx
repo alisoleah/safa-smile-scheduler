@@ -1,10 +1,11 @@
 
 import { useState } from 'react';
-import { Menu, X, Phone, Mail, MapPin } from 'lucide-react';
+import { Menu, X, Phone, Mail, MapPin, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isArabic, setIsArabic] = useState(false);
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
@@ -14,12 +15,22 @@ const Navigation = () => {
     setIsMenuOpen(false);
   };
 
-  const menuItems = [
+  const toggleLanguage = () => {
+    setIsArabic(!isArabic);
+  };
+
+  const menuItems = isArabic ? [
+    { name: 'الرئيسية', action: () => scrollToSection('home') },
+    { name: 'الخدمات', action: () => scrollToSection('services') },
+    { name: 'اتصل بنا', action: () => scrollToSection('contact') },
+    { name: 'احجز موعد', action: () => scrollToSection('appointment') },
+    { name: 'التشخيص', action: () => scrollToSection('diagnosis') }
+  ] : [
     { name: 'Home', action: () => scrollToSection('home') },
     { name: 'Services', action: () => scrollToSection('services') },
     { name: 'Contact Us', action: () => scrollToSection('contact') },
     { name: 'Schedule a Visit', action: () => scrollToSection('appointment') },
-    { name: 'Know Your يهشلرخسهس', action: () => scrollToSection('about') }
+    { name: 'Diagnosis', action: () => scrollToSection('diagnosis') }
   ];
 
   return (
@@ -36,8 +47,12 @@ const Navigation = () => {
               />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-slate-800">SAFA Dental Center</h1>
-              <p className="text-sm text-slate-600">مركز صفا لطب الأسنان</p>
+              <h1 className="text-xl font-bold text-slate-800">
+                {isArabic ? 'مركز صفا لطب الأسنان' : 'SAFA Dental Center'}
+              </h1>
+              <p className="text-sm text-slate-600">
+                {isArabic ? 'SAFA Dental Center' : 'مركز صفا لطب الأسنان'}
+              </p>
             </div>
           </div>
 
@@ -52,6 +67,15 @@ const Navigation = () => {
                 {item.name}
               </button>
             ))}
+            
+            {/* Language Toggle */}
+            <button
+              onClick={toggleLanguage}
+              className="flex items-center space-x-1 text-slate-700 hover:text-sky-600 font-medium transition-colors duration-200"
+            >
+              <Globe size={16} />
+              <span>{isArabic ? 'EN' : 'العربية'}</span>
+            </button>
           </div>
 
           {/* Contact Info */}
@@ -88,6 +112,16 @@ const Navigation = () => {
                   {item.name}
                 </button>
               ))}
+              
+              {/* Language Toggle */}
+              <button
+                onClick={toggleLanguage}
+                className="flex items-center space-x-2 text-slate-700 hover:text-sky-600 font-medium transition-colors duration-200"
+              >
+                <Globe size={16} />
+                <span>{isArabic ? 'Switch to English' : 'التبديل إلى العربية'}</span>
+              </button>
+              
               <div className="pt-4 border-t">
                 <div className="flex flex-col space-y-2 text-sm text-slate-600">
                   <div className="flex items-center space-x-2">
