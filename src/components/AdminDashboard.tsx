@@ -54,17 +54,30 @@ const AdminDashboard = () => {
     setProcessingId(appointmentId);
     
     try {
+      console.log(`Invoking send-notifications for appointment ${appointmentId} with action: ${action}`);
+      
       const { data, error } = await supabase.functions.invoke('send-notifications', {
         body: { appointmentId, action }
       });
 
-      if (error) throw error;
+      console.log('Edge function response:', { data, error });
 
-      toast.success(`Appointment ${action}ed and notifications sent!`);
+      if (error) {
+        console.error('Edge function error:', error);
+        throw error;
+      }
+
+      if (data?.sms_sent) {
+        toast.success(`Appointment ${action}ed! Email and SMS notifications sent successfully.`);
+      } else {
+        toast.success(`Appointment ${action}ed! Email sent successfully. SMS may have failed - check logs.`);
+        console.warn('SMS notification failed. Response:', data);
+      }
+      
       await fetchAppointments();
     } catch (error: any) {
       console.error('Error processing appointment:', error);
-      toast.error(`Failed to ${action} appointment`);
+      toast.error(`Failed to ${action} appointment: ${error.message}`);
     } finally {
       setProcessingId(null);
     }

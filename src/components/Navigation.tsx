@@ -34,6 +34,11 @@ const Navigation = () => {
                 src="/lovable-uploads/7fd75df0-7b05-4b90-9328-a1f1817bab0d.png" 
                 alt="SAFA Dental Center Logo" 
                 className="w-8 h-8 object-contain filter brightness-0 invert"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  target.src = 'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?ixlib=rb-4.0.3&auto=format&fit=crop&w=64&h=64';
+                  target.className = "w-8 h-8 object-contain";
+                }}
               />
             </div>
             <div>

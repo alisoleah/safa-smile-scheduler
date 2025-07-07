@@ -245,11 +245,15 @@ const Index = () => {
                               <p className="text-lg leading-relaxed">{service.description}</p>
                             </div>
                             <div className="md:w-1/2 h-64 md:h-80">
-                              <img 
-                                src={service.image} 
-                                alt={service.title}
-                                className="w-full h-full object-cover"
-                              />
+                <img 
+                  src={service.image} 
+                  alt={service.title}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.src = 'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80';
+                  }}
+                />
                             </div>
                           </div>
                         </CardContent>
@@ -317,6 +321,10 @@ const Index = () => {
                   src="https://images.unsplash.com/photo-1622253692010-33352da69e0d?q=80&w=800&auto=format&fit=crop" 
                   alt="Dr. Hesham" 
                   className="rounded-3xl shadow-2xl w-full h-auto object-cover"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.src = 'https://images.unsplash.com/photo-1622253692010-33352da69e0d?q=80&w=800&auto=format&fit=crop';
+                  }}
                 />
               </div>
               <div className="lg:w-1/2">
@@ -349,6 +357,10 @@ const Index = () => {
                             src={member.image}
                             alt={member.name}
                             className="w-24 h-24 rounded-full mx-auto mb-4 object-cover"
+                            onError={(e) => {
+                              const target = e.target as HTMLImageElement;
+                              target.src = 'https://images.unsplash.com/photo-1622253692010-33352da69e0d?q=80&w=800&auto=format&fit=crop';
+                            }}
                           />
                           <h3 className="text-xl font-semibold mb-1">{member.name}</h3>
                           <p className="text-sky-600 mb-2">{member.specialty}</p>
