@@ -10,6 +10,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { format } from "date-fns";
+import Navigation from "@/components/Navigation";
 
 const Index = () => {
   const [formData, setFormData] = useState({
@@ -168,26 +169,11 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
+      <Navigation />
+      
       {/* Hero Section */}
-      <section className="py-16 px-4">
+      <section id="home" className="py-16 px-4">
         <div className="container mx-auto max-w-6xl">
-          <div className="text-center mb-8">
-            <div className="flex items-center justify-center mb-4">
-              <div className="bg-gradient-to-br from-sky-400 to-blue-600 p-3 rounded-xl shadow-lg mr-4">
-                <img 
-                  src="/lovable-uploads/7fd75df0-7b05-4b90-9328-a1f1817bab0d.png" 
-                  alt="SAFA Dental Center Logo" 
-                  className="w-8 h-8 object-contain filter brightness-0 invert"
-                />
-              </div>
-              <div>
-                <h1 className="text-4xl font-bold text-slate-800 mb-1">SAFA Dental Center</h1>
-                <p className="text-lg text-slate-600 mb-2">مركز صفا لطب الأسنان</p>
-                <p className="text-slate-500">Premium Dental Care in the Heart of Cairo</p>
-              </div>
-            </div>
-          </div>
-
           {/* Hero Section */}
           <section className="bg-gradient-to-br from-sky-500 to-sky-700 text-white rounded-3xl mb-12 relative overflow-hidden">
             <div className="container mx-auto px-6 py-20 text-center relative z-10">
@@ -206,7 +192,7 @@ const Index = () => {
           </section>
 
           {/* Contact Info */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+          <div id="contact" className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
             <Card className="hover:shadow-lg transition-shadow">
               <CardContent className="flex items-center space-x-3 p-6">
                 <Phone className="text-sky-600" size={24} />
@@ -237,7 +223,7 @@ const Index = () => {
           </div>
 
           {/* Services Section */}
-          <section className="mb-12">
+          <section id="services" className="mb-12">
             <h2 className="text-4xl font-bold text-center mb-4">
               <span className="bg-gradient-to-r from-sky-500 to-blue-600 bg-clip-text text-transparent">
                 Our Premium Services
@@ -283,7 +269,7 @@ const Index = () => {
           </section>
 
           {/* About Section */}
-          <section className="mb-12">
+          <section id="about" className="mb-12">
             <div className="flex flex-col lg:flex-row items-center gap-16">
               <div className="lg:w-1/2">
                 <img 
