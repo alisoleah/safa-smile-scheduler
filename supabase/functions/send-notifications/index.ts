@@ -20,7 +20,9 @@ const resend = new Resend(resendApiKey);
 
 interface NotificationRequest {
   appointmentId: string;
-  action: 'confirm' | 'cancel';
+  action: 'confirm' | 'cancel' | 'test';
+  testMode?: boolean;
+  testPhone?: string;
 }
 
 // Function to format Egyptian phone numbers for Twilio
@@ -77,12 +79,80 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const { appointmentId, action }: NotificationRequest = await req.json();
+    const { appointmentId, action, testMode, testPhone }: NotificationRequest = await req.json();
     console.log(`Processing ${action} for appointment ${appointmentId}`);
 
     // Validate Twilio credentials first
     if (!validateTwilioCredentials()) {
       throw new Error('Invalid Twilio configuration');
+    }
+
+    // Get clinic settings
+    const { data: clinicSettings, error: settingsError } = await supabase
+      .from('clinic_settings')
+      .select('setting_key, setting_value');
+
+    let clinicAddress = "33 A Elkasr ELEINI St, Cairo, Egypt";
+    let locationUrl = "https://maps.app.goo.gl/QCDMYj87XZHmgNjJ7";
+    let clinicName = "SAFA Dental Center";
+
+    if (clinicSettings && !settingsError) {
+      const settings = clinicSettings.reduce((acc: any, item: any) => {
+        acc[item.setting_key] = item.setting_value;
+        return acc;
+      }, {});
+      
+      clinicAddress = settings.address || clinicAddress;
+      locationUrl = settings.location_url || locationUrl;
+      clinicName = settings.clinic_name_en || clinicName;
+    }
+
+    // Handle test mode
+    if (testMode && action === 'test') {
+      console.log('Test mode enabled - testing SMS functionality');
+      
+      const testMessage = `Test SMS from ${clinicName}. If you receive this, SMS is working correctly!`;
+      const formattedTestPhone = formatPhoneNumber(testPhone || '+201234567890');
+      
+      console.log('Test SMS Details:');
+      console.log('  From:', twilioPhoneNumber);
+      console.log('  To:', formattedTestPhone);
+      console.log('  Message:', testMessage);
+
+      const smsResponse = await fetch(`https://api.twilio.com/2010-04-01/Accounts/${twilioAccountSid}/Messages.json`, {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Basic ' + btoa(`${twilioAccountSid}:${twilioAuthToken}`),
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+          From: twilioPhoneNumber,
+          To: formattedTestPhone,
+          Body: testMessage,
+        }),
+      });
+
+      const smsResult = await smsResponse.json();
+      
+      if (!smsResponse.ok) {
+        console.error('Test SMS failed:', smsResult);
+      } else {
+        console.log('Test SMS sent successfully:', smsResult);
+      }
+
+      return new Response(
+        JSON.stringify({ 
+          success: true, 
+          test: true,
+          sms: smsResult,
+          sms_sent: smsResponse.ok,
+          phone_formatted: formattedTestPhone
+        }),
+        { 
+          status: 200, 
+          headers: { 'Content-Type': 'application/json', ...corsHeaders } 
+        }
+      );
     }
 
     // Get appointment details
@@ -99,7 +169,6 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log('Processing appointment for:', appointment.patient_name);
 
-    const clinicAddress = "33 A Elkasr ELEINI St, Cairo, Egypt";
     const statusText = action === 'confirm' ? 'confirmed' : 'cancelled';
     
     // Send Email
@@ -115,14 +184,14 @@ const handler = async (req: Request): Promise<Response> => {
       </ul>
       ${action === 'confirm' ? 
         `<p>Please arrive 15 minutes early for your appointment.</p>
-         <p><a href="https://maps.google.com/?q=${encodeURIComponent(clinicAddress)}" target="_blank">Click here to view location on Google Maps</a></p>` : 
+         <p><a href="${locationUrl}" target="_blank">Click here to view location on Google Maps</a></p>` : 
         '<p>If you need to reschedule, please contact us.</p>'
       }
-      <p>Best regards,<br>SAFA Dental Center Team</p>
+      <p>Best regards,<br>${clinicName} Team</p>
     `;
 
     const emailResponse = await resend.emails.send({
-      from: 'SAFA Dental Center <onboarding@resend.dev>',
+      from: `${clinicName} <onboarding@resend.dev>`,
       to: [appointment.patient_email],
       subject: emailSubject,
       html: emailHtml,
@@ -138,7 +207,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Send SMS with enhanced error handling
     const smsMessage = action === 'confirm' 
-      ? `Hi ${appointment.patient_name}, your appointment on ${new Date(appointment.appointment_date).toLocaleDateString()} at ${appointment.appointment_time} has been confirmed. Address: ${clinicAddress}. View on maps: https://maps.google.com/?q=${encodeURIComponent(clinicAddress)}`
+      ? `Hi ${appointment.patient_name}, your appointment on ${new Date(appointment.appointment_date).toLocaleDateString()} at ${appointment.appointment_time} has been confirmed. Address: ${clinicAddress}. View on maps: ${locationUrl}`
       : `Hi ${appointment.patient_name}, your appointment on ${new Date(appointment.appointment_date).toLocaleDateString()} at ${appointment.appointment_time} has been cancelled. Please contact us to reschedule.`;
 
     console.log('SMS Details:');

@@ -12,9 +12,11 @@ import { toast } from "sonner";
 import { format } from "date-fns";
 import Navigation from "@/components/Navigation";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useClinicSettings } from "@/hooks/useClinicSettings";
 
 const Index = () => {
   const { isArabic, t } = useLanguage();
+  const { settings } = useClinicSettings();
   const [formData, setFormData] = useState({
     patient_name: "",
     patient_email: "",
@@ -26,8 +28,6 @@ const Index = () => {
   const [availableSlots, setAvailableSlots] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [slotsLoading, setSlotsLoading] = useState(false);
-
-  const clinicAddress = "33 A Elkasr ELEINI St, Cairo, Egypt";
 
   useEffect(() => {
     if (formData.appointment_date) {
@@ -196,7 +196,7 @@ const Index = () => {
                 <Phone className="text-sky-600" size={24} />
                 <div>
                   <p className="font-semibold">{t('phone')}</p>
-                  <p className="text-gray-600">010 04500116</p>
+                  <p className="text-gray-600" dir="ltr">{settings.phone_number}</p>
                 </div>
               </CardContent>
             </Card>
@@ -205,7 +205,7 @@ const Index = () => {
                 <Mail className="text-sky-600" size={24} />
                 <div>
                   <p className="font-semibold">{t('email')}</p>
-                  <p className="text-gray-600">dr.hesham_dent@hotmail.com</p>
+                  <p className="text-gray-600" dir="ltr">{settings.email}</p>
                 </div>
               </CardContent>
             </Card>
@@ -214,7 +214,7 @@ const Index = () => {
                 <Clock className="text-sky-600" size={24} />
                 <div>
                   <p className="font-semibold">{t('hours')}</p>
-                  <p className="text-gray-600">{t('workingHours')}</p>
+                  <p className="text-gray-600">{isArabic ? settings.working_hours_ar : settings.working_hours_en}</p>
                 </div>
               </CardContent>
             </Card>

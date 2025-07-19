@@ -2,10 +2,12 @@
 import { useState } from 'react';
 import { Menu, X, Phone, Mail, Globe } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useClinicSettings } from '@/hooks/useClinicSettings';
 
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { isArabic, toggleLanguage, t } = useLanguage();
+  const { settings } = useClinicSettings();
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
@@ -31,7 +33,7 @@ const Navigation = () => {
           <div className={`flex items-center space-x-3 ${isArabic ? 'flex-row-reverse space-x-reverse' : ''}`}>
             <div className="bg-gradient-to-br from-sky-400 to-blue-600 p-2 rounded-lg">
               <img 
-                src="/lovable-uploads/7fd75df0-7b05-4b90-9328-a1f1817bab0d.png" 
+                src={settings.logo_path} 
                 alt="SAFA Dental Center Logo" 
                 className="w-8 h-8 object-contain filter brightness-0 invert"
                 onError={(e) => {
@@ -43,10 +45,10 @@ const Navigation = () => {
             </div>
             <div>
               <h1 className="text-xl font-bold text-slate-800">
-                {isArabic ? 'مركز صفا لطب الأسنان' : 'SAFA Dental Center'}
+                {isArabic ? settings.clinic_name_ar : settings.clinic_name_en}
               </h1>
               <p className="text-sm text-slate-600">
-                {isArabic ? 'SAFA Dental Center' : 'مركز صفا لطب الأسنان'}
+                {isArabic ? settings.clinic_name_en : settings.clinic_name_ar}
               </p>
             </div>
           </div>
@@ -77,11 +79,11 @@ const Navigation = () => {
           <div className={`hidden lg:flex items-center space-x-4 text-sm text-slate-600 ${isArabic ? 'flex-row-reverse space-x-reverse' : ''}`}>
             <div className={`flex items-center space-x-1 ${isArabic ? 'flex-row-reverse space-x-reverse' : ''}`}>
               <Phone size={16} />
-              <span>010 04500116</span>
+              <span dir="ltr">{settings.phone_number}</span>
             </div>
             <div className={`flex items-center space-x-1 ${isArabic ? 'flex-row-reverse space-x-reverse' : ''}`}>
               <Mail size={16} />
-              <span>dr.hesham_dent@hotmail.com</span>
+              <span dir="ltr">{settings.email}</span>
             </div>
           </div>
 
@@ -121,11 +123,11 @@ const Navigation = () => {
                 <div className="flex flex-col space-y-2 text-sm text-slate-600">
                   <div className={`flex items-center space-x-2 ${isArabic ? 'flex-row-reverse space-x-reverse' : ''}`}>
                     <Phone size={16} />
-                    <span>010 04500116</span>
+                    <span dir="ltr">{settings.phone_number}</span>
                   </div>
                   <div className={`flex items-center space-x-2 ${isArabic ? 'flex-row-reverse space-x-reverse' : ''}`}>
                     <Mail size={16} />
-                    <span>dr.hesham_dent@hotmail.com</span>
+                    <span dir="ltr">{settings.email}</span>
                   </div>
                 </div>
               </div>
