@@ -131,7 +131,8 @@ const Index = () => {
     {
       name: "Dr. Hesham",
       specialty: t('leadDentist'),
-      image: "https://images.unsplash.com/photo-1622253692010-33352da69e0d?q=80&w=800&auto=format&fit=crop",
+      image: "Dr.Hesham.jpg",
+      // image: "https://images.unsplash.com/photo-1622253692010-33352da69e0d?q=80&w=800&auto=format&fit=crop",
       experience: `15+ ${t('experience')}`
     },
     {
