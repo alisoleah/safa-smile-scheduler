@@ -13,43 +13,6 @@ interface ImageManagerProps {
 }
 
 const ImageManager = ({ settings, onSettingChange }: ImageManagerProps) => {
-  const [uploading, setUploading] = useState<string | null>(null);
-
-  const handleImageUpload = async (file: File, settingKey: string) => {
-    setUploading(settingKey);
-    
-    try {
-      const formData = new FormData();
-      formData.append('file', file);
-      
-      // Upload to Lovable's file system
-      const response = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
-      });
-      
-      if (!response.ok) {
-        throw new Error('Upload failed');
-      }
-      
-      const data = await response.json();
-      onSettingChange(settingKey, data.url);
-      toast.success('Image uploaded successfully!');
-    } catch (error) {
-      console.error('Upload error:', error);
-      toast.error('Failed to upload image');
-    } finally {
-      setUploading(null);
-    }
-  };
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>, settingKey: string) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      handleImageUpload(file, settingKey);
-    }
-  };
-
   const imageSettings = [
     { key: 'logo_path', label: 'Clinic Logo', description: 'Main logo displayed in header and navigation' },
     { key: 'carousel_image_1', label: 'Carousel Image 1', description: 'First image in the hero carousel' },
@@ -67,63 +30,77 @@ const ImageManager = ({ settings, onSettingChange }: ImageManagerProps) => {
           <ImageIcon className="w-5 h-5" />
           Image Management
         </CardTitle>
+        <p className="text-sm text-muted-foreground">
+          Manage all images displayed on your website. Use image URLs from services like Unsplash, your own hosting, or cloud storage.
+        </p>
       </CardHeader>
       <CardContent className="space-y-6">
         {imageSettings.map((imageSetting) => (
-          <div key={imageSetting.key} className="space-y-3">
+          <div key={imageSetting.key} className="space-y-3 p-4 border rounded-lg">
             <div>
-              <Label htmlFor={imageSetting.key}>{imageSetting.label}</Label>
+              <Label htmlFor={`${imageSetting.key}_url`} className="text-base font-semibold">
+                {imageSetting.label}
+              </Label>
               <p className="text-sm text-muted-foreground">{imageSetting.description}</p>
             </div>
             
-            <div className="flex items-center gap-4">
-              {settings[imageSetting.key] && (
-                <div className="flex items-center gap-2">
-                  <img 
-                    src={settings[imageSetting.key]} 
-                    alt={imageSetting.label}
-                    className="w-16 h-16 object-cover rounded border"
-                  />
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => onSettingChange(imageSetting.key, '')}
-                    className="text-destructive"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
-                </div>
-              )}
-              
-              <div className="flex-1">
-                <Input
-                  id={imageSetting.key}
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => handleFileChange(e, imageSetting.key)}
-                  disabled={uploading === imageSetting.key}
-                  className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary/90"
+            {/* Current Image Preview */}
+            {settings[imageSetting.key] && (
+              <div className="flex items-center gap-3">
+                <img 
+                  src={settings[imageSetting.key]} 
+                  alt={imageSetting.label}
+                  className="w-20 h-20 object-cover rounded border"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.src = 'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?q=80&w=200&auto=format&fit=crop';
+                  }}
                 />
-                {uploading === imageSetting.key && (
-                  <p className="text-sm text-muted-foreground mt-1">
-                    Uploading...
+                <div className="flex-1">
+                  <p className="text-sm font-medium">Current Image</p>
+                  <p className="text-xs text-muted-foreground truncate">
+                    {settings[imageSetting.key]}
                   </p>
-                )}
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => onSettingChange(imageSetting.key, '')}
+                  className="text-destructive hover:bg-destructive/10"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </Button>
               </div>
-            </div>
+            )}
             
-            <div>
-              <Label htmlFor={`${imageSetting.key}_url`}>Or enter image URL:</Label>
+            {/* URL Input */}
+            <div className="space-y-2">
+              <Label htmlFor={`${imageSetting.key}_url`} className="text-sm">
+                Image URL:
+              </Label>
               <Input
                 id={`${imageSetting.key}_url`}
                 value={settings[imageSetting.key] || ''}
                 onChange={(e) => onSettingChange(imageSetting.key, e.target.value)}
-                placeholder="https://example.com/image.jpg"
+                placeholder="https://example.com/image.jpg or https://images.unsplash.com/..."
                 dir="ltr"
+                className="font-mono text-sm"
               />
+              <p className="text-xs text-muted-foreground">
+                💡 Tip: Use Unsplash, Pixabay, or upload to your own image hosting service
+              </p>
             </div>
           </div>
         ))}
+        
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <h4 className="font-semibold text-blue-800 mb-2">📸 Image Sources</h4>
+          <ul className="text-sm text-blue-700 space-y-1">
+            <li>• <strong>Unsplash:</strong> Free high-quality images (copy image address)</li>
+            <li>• <strong>Your hosting:</strong> Upload to your website or cloud storage</li>
+            <li>• <strong>Existing images:</strong> Use current URLs that are already working</li>
+          </ul>
+        </div>
       </CardContent>
     </Card>
   );
