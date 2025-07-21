@@ -131,20 +131,19 @@ const Index = () => {
     {
       name: "Dr. Hesham",
       specialty: t('leadDentist'),
-      image: "Dr.Hesham.jpg",
-      // image: "https://images.unsplash.com/photo-1622253692010-33352da69e0d?q=80&w=800&auto=format&fit=crop",
+      image: settings.expert_image_1 || "Dr.Hesham.jpg",
       experience: `15+ ${t('experience')}`
     },
     {
       name: "Dr. Sarah Ahmed",
       specialty: t('cosmeticDentist'),
-      image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?q=80&w=800&auto=format&fit=crop",
+      image: settings.expert_image_2 || "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?q=80&w=800&auto=format&fit=crop",
       experience: `12+ ${t('experience')}`
     },
     {
       name: "Dr. Mohamed Ali",
       specialty: t('orthodontist'),
-      image: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?q=80&w=800&auto=format&fit=crop",
+      image: settings.expert_image_3 || "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?q=80&w=800&auto=format&fit=crop",
       experience: `10+ ${t('experience')}`
     }
   ];
@@ -187,6 +186,60 @@ const Index = () => {
                 <Calendar className={`inline ${isArabic ? 'ml-2' : 'mr-2'}`} size={20} />
                 {t('scheduleVisit')}
               </a>
+            </div>
+          </section>
+
+          {/* Hero Image Carousel */}
+          <section className="mb-12">
+            <div className="max-w-6xl mx-auto">
+              <Carousel className="w-full">
+                <CarouselContent>
+                  <CarouselItem>
+                    <div className="relative h-96 rounded-2xl overflow-hidden">
+                      <img 
+                        src={settings.carousel_image_1}
+                        alt="Clinic Interior"
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.src = 'https://images.unsplash.com/photo-1629909613654-28e377c37b09?q=80&w=1200&auto=format&fit=crop';
+                        }}
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                    </div>
+                  </CarouselItem>
+                  <CarouselItem>
+                    <div className="relative h-96 rounded-2xl overflow-hidden">
+                      <img 
+                        src={settings.carousel_image_2}
+                        alt="Dental Equipment"
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.src = 'https://images.unsplash.com/photo-1606811971618-4486d14f3f99?q=80&w=1200&auto=format&fit=crop';
+                        }}
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                    </div>
+                  </CarouselItem>
+                  <CarouselItem>
+                    <div className="relative h-96 rounded-2xl overflow-hidden">
+                      <img 
+                        src={settings.carousel_image_3}
+                        alt="Treatment Room"
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.src = 'https://images.unsplash.com/photo-1609840114035-3c981b782dfe?q=80&w=1200&auto=format&fit=crop';
+                        }}
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                    </div>
+                  </CarouselItem>
+                </CarouselContent>
+                <CarouselPrevious />
+                <CarouselNext />
+              </Carousel>
             </div>
           </section>
 
