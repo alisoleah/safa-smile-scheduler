@@ -7,6 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { Save, MapPin, Phone, Mail, Clock, Globe } from 'lucide-react';
+import ImageManager from './ImageManager';
 
 interface ClinicSetting {
   setting_key: string;
@@ -48,7 +49,13 @@ const ClinicSettings = () => {
     try {
       const { error } = await supabase
         .from('clinic_settings')
-        .upsert({ setting_key: key, setting_value: value });
+        .upsert({ 
+          setting_key: key, 
+          setting_value: value,
+          updated_at: new Date().toISOString()
+        }, {
+          onConflict: 'setting_key'
+        });
 
       if (error) throw error;
 
@@ -213,6 +220,11 @@ const ClinicSettings = () => {
           </div>
         </CardContent>
       </Card>
+
+      <ImageManager 
+        settings={settings}
+        onSettingChange={handleInputChange}
+      />
 
       <div className="flex justify-end">
         <Button onClick={handleSave} disabled={saving} className="flex items-center gap-2">
